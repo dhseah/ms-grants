@@ -10,6 +10,14 @@
         "annualIncome": 0,
         "dateOfBirth": "2010-01-01"
 
+      },
+      {
+        "name": "father",
+        "gender": "M",
+        "maritalStatus": "Divorced",
+        "occupationType": "Employed",
+        "annualIncome": 100000,
+        "dateOfBirth": "1990-01-01"
       }
     ]
   }

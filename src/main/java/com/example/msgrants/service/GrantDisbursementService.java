@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GrantDisbursementService {
@@ -15,8 +16,8 @@ public class GrantDisbursementService {
     @Autowired
     HouseholdRepository repository;
 
-    public List<Household> searchHouseholds(int income) {
-        return repository.findAllMatching(income);
+    public List<Household> searchHouseholds(int income, boolean student) {
+        return repository.findAllMatching(income, student);
     }
 
 }

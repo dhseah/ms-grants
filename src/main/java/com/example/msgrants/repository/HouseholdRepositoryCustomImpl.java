@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -21,7 +22,7 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
     }
 
     @Override
-    public List<Household> findAllMatching(int incomeLimit) {
+    public List<Household> findAllMatching(int incomeLimit, boolean student) {
         Aggregation aggregation = newAggregation(calHouseholdIncome, filterByIncome(incomeLimit));
         AggregationResults<Household> results = mongoTemplate.aggregate(aggregation, "household", Household.class);
         return results.getMappedResults();

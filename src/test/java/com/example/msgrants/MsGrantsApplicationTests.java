@@ -4,8 +4,6 @@ import com.example.msgrants.model.Household;
 import com.example.msgrants.repository.HouseholdRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.io.File;
 import java.util.List;
 
-import static com.example.msgrants.constant.TestConstants.*;
+import static com.example.msgrants.constant.TestConstants.householdWithStudent;
+import static com.example.msgrants.constant.TestConstants.richHousehold;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -48,6 +47,24 @@ class MsGrantsApplicationTests {
     public void MiddleClassHouseholdsShouldReturnFromService() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get("/household")
                         .param("income", "150000")
+                        .param("student", "false")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        assertThat(mvcResult).isNotNull();
+
+        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/middleClassHouseholds.json"), new TypeReference<>(){});
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
+    }
+
+    @Test
+    public void studentEncouragementHouseholdsShouldReturnFromService() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get("/household")
+                        .param("income", "150000")
+                        .param("student", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andReturn();
@@ -58,7 +75,6 @@ class MsGrantsApplicationTests {
         String responseBody = mvcResult.getResponse().getContentAsString();
         List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
         assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
-
     }
 
 }
