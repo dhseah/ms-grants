@@ -1,8 +1,8 @@
 [
   {
-    "householdId": "01",
+    "id": "1",
     "housingType": "HDB",
-    "members" : [
+    "householdMembers" : [
       {
         "name": "male student",
         "gender": "M",

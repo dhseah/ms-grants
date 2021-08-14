@@ -1,5 +1,12 @@
 package com.example.msgrants;
 
+import com.example.msgrants.model.Household;
+import com.example.msgrants.repository.HouseholdRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,9 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.File;
+import java.util.List;
 
+import static com.example.msgrants.constant.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -22,25 +30,35 @@ class MsGrantsApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    void contextLoads() {
-        assertThat(mockMvc).isNotNull();
+    @Autowired
+    private HouseholdRepository repository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @BeforeEach
+    public void setUp() {
+        repository.deleteAll();
+
+        repository.save(householdWithStudent());
+        repository.save(richHousehold());
     }
 
     @Test
-    public void studentEncouragementHouseholdsShouldReturnFromService() throws Exception {
+    public void MiddleClassHouseholdsShouldReturnFromService() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get("/household")
-                        .param("student", "true")
                         .param("income", "150000")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-//                .andExpect(status().isOk())
                 .andReturn();
 
         assertThat(mvcResult).isNotNull();
 
-        String expectedResponse = new String(Files.readAllBytes(Paths.get("src/test/resources/studentEncouragementHouseholds.json")));
-        String actualResponse = mvcResult.getResponse().getContentAsString();
-        assertThat(actualResponse).isEqualToIgnoringWhitespace(expectedResponse);
+        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/studentEncouragementHouseholds.json"), new TypeReference<>(){});
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
+
     }
+
 }
