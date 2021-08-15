@@ -4,10 +4,7 @@ import com.example.msgrants.model.Household;
 import com.example.msgrants.model.SearchCriteria;
 import com.example.msgrants.service.GrantDisbursementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,6 +13,12 @@ public class GrantDisbursementController {
 
     @Autowired
     GrantDisbursementService service;
+
+    @PostMapping("/household")
+    @ResponseBody
+    public Household createHousehold(@RequestBody Household toCreate) {
+            return service.createHousehold(toCreate);
+    }
 
     @GetMapping("/household")
     @ResponseBody

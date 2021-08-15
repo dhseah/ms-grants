@@ -14,6 +14,10 @@ public class GrantDisbursementService {
     @Autowired
     HouseholdRepository repository;
 
+    public Household createHousehold(Household toPersist) {
+        return repository.save(toPersist);
+    }
+
     public List<Household> searchHouseholds(SearchCriteria criteria) {
         return repository.findAllMatching(criteria);
     }

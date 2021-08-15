@@ -48,7 +48,7 @@ class MsGrantsApplicationTests {
     public void householdShouldBeReturnedAfterAdd() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(post("/household")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"housingType\": \"Condominium\", \"householdMembers\": \"\" }")
+                        .content("{ \"housingType\": \"Condominium\", \"householdMembers\": [] }")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andReturn();
@@ -58,7 +58,7 @@ class MsGrantsApplicationTests {
         String responseBody = mvcResult.getResponse().getContentAsString();
         Household actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
         assertThat(actualResponse.getHousingType()).isEqualTo("Condominium");
-        assertThat(actualResponse.getHouseholdMembers()).isEqualTo(null);
+        assertThat(actualResponse.getHouseholdMembers().size()).isEqualTo(0);
     }
 
     @Test
