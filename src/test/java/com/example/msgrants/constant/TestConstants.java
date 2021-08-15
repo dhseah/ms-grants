@@ -63,6 +63,15 @@ public class TestConstants {
     public static Household householdWithElderly() {
         List<HouseholdMember> members = new ArrayList<>();
         members.add(HouseholdMember.builder()
+                .name("husband")
+                .gender("M")
+                .maritalStatus("Married")
+                .occupationType("Employed")
+                .annualIncome(100000)
+                .dateOfBirth(LocalDate.of(1980, 1, 1))
+                .build());
+
+        members.add(HouseholdMember.builder()
                 .name("elderly man")
                 .gender("M")
                 .maritalStatus("Married")
@@ -71,6 +80,52 @@ public class TestConstants {
                 .dateOfBirth(LocalDate.of(1950, 1, 1))
                 .build());
 
+
+        return Household.builder()
+                .housingType("HDB")
+                .householdMembers(members)
+                .build();
+    }
+
+    public static Household nuclearHouseholdWithBaby() {
+        List<HouseholdMember> members = new ArrayList<>();
+        members.add(HouseholdMember.builder()
+                .name("husband")
+                .gender("M")
+                .maritalStatus("Married")
+                .spouse("wife")
+                .occupationType("Employed")
+                .annualIncome(100000)
+                .dateOfBirth(LocalDate.of(1980, 1, 1))
+                .build());
+
+        members.add(HouseholdMember.builder()
+                .name("wife")
+                .gender("F")
+                .maritalStatus("Married")
+                .spouse("husband")
+                .occupationType("Employed")
+                .annualIncome(100000)
+                .dateOfBirth(LocalDate.of(1985, 1, 1))
+                .build());
+
+        members.add(HouseholdMember.builder()
+                .name("teenage son")
+                .gender("M")
+                .maritalStatus("Single")
+                .occupationType("Unemployed")
+                .annualIncome(0)
+                .dateOfBirth(LocalDate.of(  2000, 1, 1))
+                .build());
+
+        members.add(HouseholdMember.builder()
+                .name("baby girl")
+                .gender("F")
+                .maritalStatus("Single")
+                .occupationType("Unemployed")
+                .annualIncome(0)
+                .dateOfBirth(LocalDate.of(2020, 1, 1))
+                .build());
 
         return Household.builder()
                 .housingType("HDB")

@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.msgrants.constant.TestConstants.*;
@@ -38,8 +40,10 @@ class MsGrantsApplicationTests {
     public void setUp() {
         repository.deleteAll();
 
-        repository.save(householdWithStudent());
         repository.save(richHousehold());
+        repository.save(nuclearHouseholdWithBaby());
+        repository.save(householdWithStudent());
+        repository.save(householdWithElderly());
     }
 
     @Test
@@ -56,7 +60,8 @@ class MsGrantsApplicationTests {
         assertThat(mvcResult).isNotNull();
 
         String responseBody = mvcResult.getResponse().getContentAsString();
-        Household actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        Household actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
+        });
         assertThat(actualResponse.getHousingType()).isEqualTo("Condominium");
         assertThat(actualResponse.getHouseholdMembers().size()).isEqualTo(0);
     }
@@ -67,52 +72,57 @@ class MsGrantsApplicationTests {
         String memberJson = objectMapper.writeValueAsString(newHouseholdMember());
 
         MvcResult mvcResult = this.mockMvc.perform(put("/household/" + household.getId())
-                .accept(MediaType.APPLICATION_JSON)
-                .content(memberJson)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(memberJson)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         assertThat(mvcResult).isNotNull();
 
         String responseBody = mvcResult.getResponse().getContentAsString();
-        Household actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        Household actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
+        });
         assertThat(actualResponse.getHousingType()).isEqualTo("Condominium");
         assertThat(actualResponse.getHouseholdMembers().get(0)).isEqualTo(newHouseholdMember());
     }
 
     @Test
     public void everyHouseholdsShouldBeReturned() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/household")
+        MvcResult mvcResult = this.mockMvc.perform(get("/households")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         assertThat(mvcResult).isNotNull();
 
-        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/allHouseholds.json"), new TypeReference<>() {});
         String responseBody = mvcResult.getResponse().getContentAsString();
-        List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
+        });
+
+        List<Household> expectedResponse = households(richHousehold(), nuclearHouseholdWithBaby(), householdWithStudent(), householdWithElderly());
+
         assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
     }
 
     @Test
     public void middleClassHouseholdsShouldBeReturned() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/household")
+        MvcResult mvcResult = this.mockMvc.perform(get("/households")
                         .param("income", "150000")
-                        .param("student", "false")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         assertThat(mvcResult).isNotNull();
 
-        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/middleClassHouseholds.json"), new TypeReference<>() {});
         String responseBody = mvcResult.getResponse().getContentAsString();
         List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+
+        List<Household> expectedResponse = households(householdWithStudent(), householdWithElderly());
+
         assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
     }
 
     @Test
     public void studentEncouragementHouseholdsShouldBeReturned() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/household")
+        MvcResult mvcResult = this.mockMvc.perform(get("/households")
                         .param("income", "150000")
                         .param("student", "true")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -120,10 +130,44 @@ class MsGrantsApplicationTests {
 
         assertThat(mvcResult).isNotNull();
 
-        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/studentEncouragementHouseholds.json"), new TypeReference<>() {});
         String responseBody = mvcResult.getResponse().getContentAsString();
         List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/studentEncouragementHouseholds.json"), new TypeReference<>() {});
         assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
     }
 
+    @Test
+    public void householdsWithElderlyShouldBeReturned() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get("/households")
+                        .param("elderly", "true")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertThat(mvcResult).isNotNull();
+
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/elderlyHouseholds.json"), new TypeReference<>() {});
+        assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
+    }
+
+    @Test
+    public void householdsWithBabyShouldBeReturned() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get("/households")
+                        .param("baby", "true")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertThat(mvcResult).isNotNull();
+
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/nuclearHouseholds.json"), new TypeReference<>() {});
+        assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
+    }
+
+
+    private List<Household> households(Household... households) {
+        return new ArrayList<>(Arrays.asList(households));
+    }
 }

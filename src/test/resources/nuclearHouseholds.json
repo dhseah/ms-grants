@@ -3,12 +3,12 @@
     "housingType": "HDB",
     "householdMembers" : [
       {
-        "name": "male student",
-        "gender": "M",
+        "name": "baby girl",
+        "gender": "F",
         "maritalStatus": "Single",
-        "occupationType": "Student",
+        "occupationType": "Unemployed",
         "annualIncome": 0,
-        "dateOfBirth": "2010-01-01"
+        "dateOfBirth": "2020-01-01"
       }
     ]
   }

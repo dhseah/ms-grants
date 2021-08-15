@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,10 +98,13 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
     // Expressions for projection stage of aggregation
     AggregationExpression filterNone = ComparisonOperators.Eq.valueOf("qualifyingMembers.name").equalTo("qualifyingMembers.name");
     AggregationExpression filterStudents = ComparisonOperators.Eq.valueOf("qualifyingMembers.occupationType").equalToValue("Student");
+
+    AggregationExpression filterElderly = ComparisonOperators.Lte.valueOf("qualifyingMembers.dateOfBirth").lessThanEqualToValue(LocalDate.of(LocalDate.now().getYear(), 1, 1).minusYears(50));
+    AggregationExpression filterBaby = ComparisonOperators.Gte.valueOf("qualifyingMembers.dateOfBirth").greaterThanEqualToValue(LocalDate.of(LocalDate.now().getYear(), 1, 1).minusYears(5));
     // TODO: update these placeholders
     AggregationExpression filterNuclear = ComparisonOperators.Eq.valueOf("qualifyingMembers.name").equalTo("qualifyingMembers.name");
-    AggregationExpression filterElderly = ComparisonOperators.Eq.valueOf("qualifyingMembers.name").equalTo("qualifyingMembers.name");
-    AggregationExpression filterBaby = ComparisonOperators.Eq.valueOf("qualifyingMembers.name").equalTo("qualifyingMembers.name");
+
+
 
     // matchHouseholds asks mongoDB to filter household according to a list
     // of criteria that is generated based on the received request parameters
@@ -127,9 +131,12 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
     Criteria filterHouseholdIncome150000 = new Criteria("householdIncome").lt(150000);
     Criteria filterHouseholdIncome100000 = new Criteria("householdIncome").lt(100000);
     Criteria filterHouseholdWithStudent = new Criteria("householdMembers.occupationType").is("Student");
+    Criteria filterHouseholdWithElderly = new Criteria("householdMembers.dateOfBirth").lte(LocalDate.of(LocalDate.now().getYear(), 1, 1).minusYears(50));
+    Criteria filterHouseholdWithBaby = new Criteria("householdMembers.dateOfBirth").gte(LocalDate.of(LocalDate.now().getYear(), 1, 1).minusYears(5));
+
     // TODO: update these placeholders
     Criteria filterHouseholdNuclear = new Criteria("householdMembers.occupationType").is("Student");
-    Criteria filterHouseholdWithElderly = new Criteria("householdMembers.occupationType").is("Student");
-    Criteria filterHouseholdWithBaby = new Criteria("householdMembers.occupationType").is("Student");
+
+
 
 }

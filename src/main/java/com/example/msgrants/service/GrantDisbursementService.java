@@ -22,6 +22,9 @@ public class GrantDisbursementService {
         return repository.save(toPersist);
     }
 
+    public Household retrieveHousehold(String id) {
+        return repository.findById(id).get();
+    }
 
     public Household addHouseholdMember(String id, HouseholdMember toAdd) {
         return repository.findAndModify(id, toAdd);

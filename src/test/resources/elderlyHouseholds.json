@@ -1,0 +1,15 @@
+[
+  {
+    "housingType": "HDB",
+    "householdMembers" : [
+      {
+        "name": "elderly man",
+        "gender": "M",
+        "maritalStatus": "Married",
+        "occupationType": "Unemployed",
+        "annualIncome": 20000,
+        "dateOfBirth": "1950-01-01"
+      }
+    ]
+  }
+]

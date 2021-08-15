@@ -21,13 +21,17 @@ public class GrantDisbursementController {
         return service.createHousehold(toCreate);
     }
 
+    @GetMapping("/household/{id}")
+    @ResponseBody
+    public Household retrievedHousehold(@PathVariable String id) { return service.retrieveHousehold(id); }
+
     @PutMapping("/household/{id}")
     @ResponseBody
     public Household addHouseholdMember(@PathVariable String id, @RequestBody HouseholdMember toAdd) {
         return service.addHouseholdMember(id, toAdd);
     }
 
-    @GetMapping("/household")
+    @GetMapping("/households")
     @ResponseBody
     public List<Household> searchHouseholds(
             @RequestParam(required = false) Integer income,
