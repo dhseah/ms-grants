@@ -44,7 +44,22 @@ class MsGrantsApplicationTests {
     }
 
     @Test
-    public void MiddleClassHouseholdsShouldReturnFromService() throws Exception {
+    public void everyHouseholdsShouldReturnFromService() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get("/household")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        assertThat(mvcResult).isNotNull();
+
+        List<Household> expectedResponse = objectMapper.readValue(new File("src/test/resources/allHouseholds.json"), new TypeReference<>(){});
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        List<Household> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        assertThat(actualResponse).usingElementComparatorIgnoringFields("id").isEqualTo(expectedResponse);
+    }
+
+    @Test
+    public void middleClassHouseholdsShouldReturnFromService() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get("/household")
                         .param("income", "150000")
                         .param("student", "false")

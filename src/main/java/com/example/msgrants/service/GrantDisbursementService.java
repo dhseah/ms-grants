@@ -14,8 +14,8 @@ public class GrantDisbursementService {
     @Autowired
     HouseholdRepository repository;
 
-    public List<Household> searchHouseholds(int income, SearchCriteria criteria) {
-        return repository.findAllMatching(income, criteria);
+    public List<Household> searchHouseholds(SearchCriteria criteria) {
+        return repository.findAllMatching(criteria);
     }
 
 }

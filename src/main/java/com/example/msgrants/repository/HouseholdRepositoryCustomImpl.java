@@ -22,7 +22,7 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
     }
 
     @Override
-    public List<Household> findAllMatching(int incomeLimit, SearchCriteria criteria) {
+    public List<Household> findAllMatching(SearchCriteria criteria) {
 
         AggregationExpression filtersToInclude = filtersToInclude(criteria);
 
@@ -32,7 +32,7 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
         // calculate household income for all households
         // then filter household based on income and other criteria
         // then list households with household members who qualify for grant(s)
-        Aggregation aggregation = newAggregation(projectHouseholdIncome, matchHouseholds(incomeLimit, criteria), projectQualifyingMembers);
+        Aggregation aggregation = newAggregation(projectHouseholdIncome, matchHouseholds(criteria), projectQualifyingMembers);
         AggregationResults<Household> results = mongoTemplate.aggregate(aggregation, "household", Household.class);
         return results.getMappedResults();
 
@@ -87,11 +87,13 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
 
     // matchHouseholds asks mongoDB to filter household according to a list
     // of criteria that is generated based on the received request parameters
-    MatchOperation matchHouseholds(int incomeLimit, SearchCriteria criteria) {
+    MatchOperation matchHouseholds(SearchCriteria criteria) {
 
         List<Criteria> list = new ArrayList<>();
-        list.add(new Criteria("householdIncome").lt(incomeLimit));
+        list.add(noFilter);
 
+        if (criteria.isEncouragement()) list.add(filterHouseholdIncome150000);
+        if (criteria.isGst()) list.add(filterHouseholdIncome100000);
         if (criteria.isStudent()) list.add(filterHouseholdWithStudent);
         if (criteria.isNuclear()) list.add(filterHouseholdNuclear);
         if (criteria.isElderly()) list.add(filterHouseholdWithElderly);
@@ -104,10 +106,13 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
     }
 
     // Criteria for matching stage of aggregation
+    Criteria noFilter = new Criteria("householdIncome").gte(0);
+    Criteria filterHouseholdIncome150000 = new Criteria("householdIncome").lt(150000);
+    Criteria filterHouseholdIncome100000 = new Criteria("householdIncome").lt(100000);
     Criteria filterHouseholdWithStudent = new Criteria("householdMembers.occupationType").is("Student");
     // TODO: update these placeholders
     Criteria filterHouseholdNuclear = new Criteria("householdMembers.occupationType").is("Student");
-    Criteria filterHouseholdWithElderly = new Criteria("householdMembers.occupartionType").is("Student");
+    Criteria filterHouseholdWithElderly = new Criteria("householdMembers.occupationType").is("Student");
     Criteria filterHouseholdWithBaby = new Criteria("householdMembers.occupationType").is("Student");
 
 }

@@ -49,7 +49,7 @@ public class TestConstants {
                 .gender("M")
                 .maritalStatus("Married")
                 .occupationType("Unemployed")
-                .annualIncome(2000)
+                .annualIncome(20000)
                 .dateOfBirth(LocalDate.of(1950, 1, 1))
                 .build());
 
@@ -63,7 +63,7 @@ public class TestConstants {
     public static Household richHousehold() {
         List<HouseholdMember> members = new ArrayList<>();
         members.add(HouseholdMember.builder()
-                .name("rich hushband")
+                .name("rich husband")
                 .gender("M")
                 .maritalStatus("Married")
                 .spouse("rich wife")
@@ -76,6 +76,7 @@ public class TestConstants {
                 .name("rich wife")
                 .gender("F")
                 .maritalStatus("Married")
+                .spouse("rich husband")
                 .occupationType("Employed")
                 .annualIncome(500000)
                 .dateOfBirth(LocalDate.of(1985, 1, 1))

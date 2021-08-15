@@ -19,19 +19,21 @@ public class GrantDisbursementController {
 
     @GetMapping("/household")
     @ResponseBody
-    public List<Household> searchHouseholds(@RequestParam(required = false) int income,
+    public List<Household> searchHouseholds(@RequestParam(required = false) Integer income,
                                             @RequestParam(required = false) String student,
                                             @RequestParam(required = false) String nuclear,
                                             @RequestParam(required = false) String elderly,
                                             @RequestParam(required = false) String baby) {
 
         SearchCriteria searchCriteria = SearchCriteria.builder()
+                .encouragement(income != null && income == 150000 )
+                .gst(income != null && income == 100000 )
                 .student(student != null && student.equals("true"))
                 .nuclear(nuclear != null && nuclear.equals("true"))
                 .elderly(elderly != null && elderly.equals("true"))
                 .baby(baby != null && baby.equals("true"))
                 .build();
 
-        return service.searchHouseholds(income, searchCriteria);
+        return service.searchHouseholds(searchCriteria);
     }
 }

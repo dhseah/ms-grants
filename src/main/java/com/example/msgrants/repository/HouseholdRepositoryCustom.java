@@ -6,5 +6,5 @@ import com.example.msgrants.model.SearchCriteria;
 import java.util.List;
 
 public interface HouseholdRepositoryCustom {
-    List<Household> findAllMatching(int householdIncome, SearchCriteria criteria);
+    List<Household> findAllMatching(SearchCriteria criteria);
 }

@@ -7,6 +7,9 @@ import lombok.Data;
 @Data
 public class SearchCriteria {
 
+    private boolean encouragement;
+    private boolean gst;
+
     private boolean student;
     private boolean nuclear;
     private boolean elderly;
