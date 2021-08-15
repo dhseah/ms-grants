@@ -1,0 +1,47 @@
+[
+  {
+    "housingType": "HDB",
+    "householdMembers" : [
+      {
+        "name": "male student",
+        "gender": "M",
+        "maritalStatus": "Single",
+        "occupationType": "Student",
+        "annualIncome": 0,
+        "dateOfBirth": "2010-01-01"
+
+      },
+      {
+        "name": "father",
+        "gender": "M",
+        "maritalStatus": "Divorced",
+        "occupationType": "Employed",
+        "annualIncome": 100000,
+        "dateOfBirth": "1990-01-01"
+      }
+    ]
+  },
+  {
+    "housingType": "Landed",
+    "householdMembers" : [
+      {
+        "name": "rich husband",
+        "gender": "M",
+        "maritalStatus": "Married",
+        "spouse": "rich wife",
+        "occupationType": "Employed",
+        "annualIncome": 500000,
+        "dateOfBirth": "1980-01-01"
+      },
+      {
+        "name": "rich wife",
+        "gender": "F",
+        "maritalStatus": "Married",
+        "spouse": "rich husband",
+        "occupationType": "Employed",
+        "annualIncome": 500000,
+        "dateOfBirth": "1985-01-01"
+      }
+    ]
+  }
+]
