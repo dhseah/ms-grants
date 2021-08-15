@@ -17,6 +17,24 @@ public class TestConstants {
         return households;
     }
 
+    public static Household newHousehold() {
+        return Household.builder()
+                .housingType("Condominium")
+                .householdMembers(new ArrayList<>())
+                .build();
+    }
+
+    public static HouseholdMember newHouseholdMember() {
+        return HouseholdMember.builder()
+                .name("new member")
+                .gender("F")
+                .maritalStatus("Single")
+                .occupationType("Unemployed")
+                .annualIncome(0)
+                .dateOfBirth(LocalDate.of(2021, 1, 1))
+                .build();
+    }
+
     public static Household householdWithStudent() {
         List<HouseholdMember> members = new ArrayList<>();
         members.add(HouseholdMember.builder()

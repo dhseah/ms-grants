@@ -16,11 +16,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.io.File;
 import java.util.List;
 
-import static com.example.msgrants.constant.TestConstants.householdWithStudent;
-import static com.example.msgrants.constant.TestConstants.richHousehold;
+import static com.example.msgrants.constant.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
@@ -46,9 +44,11 @@ class MsGrantsApplicationTests {
 
     @Test
     public void householdShouldBeReturnedAfterAdd() throws Exception {
+        String householdJson = objectMapper.writeValueAsString(newHousehold());
+
         MvcResult mvcResult = this.mockMvc.perform(post("/household")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"housingType\": \"Condominium\", \"householdMembers\": [] }")
+                        .content(householdJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andReturn();
@@ -62,10 +62,28 @@ class MsGrantsApplicationTests {
     }
 
     @Test
+    public void householdMembersShouldBeUpdated() throws Exception {
+        Household household = repository.save(newHousehold());
+        String memberJson = objectMapper.writeValueAsString(newHouseholdMember());
+
+        MvcResult mvcResult = this.mockMvc.perform(put("/household/" + household.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .content(memberJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertThat(mvcResult).isNotNull();
+
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        Household actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        assertThat(actualResponse.getHousingType()).isEqualTo("Condominium");
+        assertThat(actualResponse.getHouseholdMembers().get(0)).isEqualTo(newHouseholdMember());
+    }
+
+    @Test
     public void everyHouseholdsShouldBeReturned() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get("/household")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andReturn();
 
         assertThat(mvcResult).isNotNull();
@@ -82,7 +100,6 @@ class MsGrantsApplicationTests {
                         .param("income", "150000")
                         .param("student", "false")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andReturn();
 
         assertThat(mvcResult).isNotNull();
@@ -99,7 +116,6 @@ class MsGrantsApplicationTests {
                         .param("income", "150000")
                         .param("student", "true")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andReturn();
 
         assertThat(mvcResult).isNotNull();

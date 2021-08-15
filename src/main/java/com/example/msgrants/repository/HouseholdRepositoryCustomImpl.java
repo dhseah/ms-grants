@@ -1,11 +1,15 @@
 package com.example.msgrants.repository;
 
 import com.example.msgrants.model.Household;
+import com.example.msgrants.model.HouseholdMember;
 import com.example.msgrants.model.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,20 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
     }
 
     @Override
+    public Household findAndModify(String id, HouseholdMember toAdd) {
+
+        Query findHousehold = new Query();
+        findHousehold.addCriteria(Criteria.where("id").is(id));
+
+        Update addHouseholdMember = new Update();
+        addHouseholdMember.push("householdMembers").value(toAdd);
+
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true);
+
+        return mongoTemplate.findAndModify(findHousehold, addHouseholdMember, options, Household.class);
+    }
+
+    @Override
     public List<Household> findAllMatching(SearchCriteria criteria) {
 
         AggregationExpression filtersToInclude = filtersToInclude(criteria);
@@ -35,7 +53,6 @@ public class HouseholdRepositoryCustomImpl implements HouseholdRepositoryCustom 
         Aggregation aggregation = newAggregation(projectHouseholdIncome, matchHouseholds(criteria), projectQualifyingMembers);
         AggregationResults<Household> results = mongoTemplate.aggregate(aggregation, "household", Household.class);
         return results.getMappedResults();
-
     }
 
     // projectHouseholdIncome ask mongoDB to calculate household income
