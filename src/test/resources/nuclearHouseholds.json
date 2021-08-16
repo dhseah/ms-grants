@@ -3,6 +3,24 @@
     "housingType": "HDB",
     "householdMembers" : [
       {
+        "name": "husband",
+        "gender": "M",
+        "maritalStatus": "Married",
+        "spouse": "wife",
+        "occupationType": "Employed",
+        "annualIncome": 100000,
+        "dateOfBirth": "1980-01-01"
+      },
+      {
+        "name": "wife",
+        "gender": "F",
+        "maritalStatus": "Married",
+        "spouse": "husband",
+        "occupationType": "Employed",
+        "annualIncome": 100000,
+        "dateOfBirth": "1985-01-01"
+      },
+      {
         "name": "baby girl",
         "gender": "F",
         "maritalStatus": "Single",

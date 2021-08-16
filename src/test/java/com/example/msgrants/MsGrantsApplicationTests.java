@@ -152,8 +152,9 @@ class MsGrantsApplicationTests {
     }
 
     @Test
-    public void householdsWithBabyShouldBeReturned() throws Exception {
+    public void nuclearHouseholdsWithBabyShouldBeReturned() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get("/households")
+                        .param("nuclear", "true")
                         .param("baby", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
